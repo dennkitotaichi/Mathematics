@@ -1,0 +1,105 @@
+#人口蜂コロニー説明　　Population Bee Colony Description
+# employee bee step
+# v = x.copy() でコピーする
+#np.random.randint()は任意の範囲の整数の乱数を返す。
+#np.random.randint(100) 0～100 の中でランダムな値を出す。
+#while 条件式  k == i 条件式が真の時に実行する文  つまり毎回行われる
+         #for i in range(N):
+              # v = x.copy()
+              # k = i
+              # while k == i:
+              #    k = np.random.randint(N)
+
+#d = 2 # 次元2回行う
+#numpy.random.rand() で 0〜1 の一様乱数を生成する
+#np.random.rand()*2 で  0〜2 の一様乱数を生成する
+#np.random.rand()*2-1 で -1から1までの一様乱数 つまり =(0〜2)-1
+#Step1 ー収穫蜂ー  (1) 収穫蜂iについて順番に次の更新式で探索点を更新していく。
+#iは1～99までの連番の値、kは1～100の間のランダムな値
+        #for j in range(d):
+        #    r = np.random.rand()*2-1 #-1から1までの一様乱数
+        #    v[i,j] = x[i,j] + r * (x[i,j] - x[k,j])
+          #↑ここは　収穫蜂
+          #Step1 ー収穫蜂ー  (1) 収穫蜂iについて順番に次の更新式で探索点を更新していく。
+              # -1から1までの一様乱数
+              # i=0～99の数　j=0～1の数　
+              # r= (0〜2)-1   ランダムな数で -1から1までの一様乱数　のどれか　 np.random.rand()*2-1
+              # iは1～99までの連番の値、kは1～100の間のランダムな値
+              #　v[i,j] = x[i,j] + r * (x[i,j] - x[k,j])
+
+
+#Step1 ー収穫蜂ー  (2) このとき新探索点候補が現在の探索点より適合度が高ければ（最小値問題なら関数値が小さければ）、探索点を更新しカウンタを0にする。反対に現在の探索点の方が適合度が高ければ更新はせず代わりにカウンタを+1する。
+#Step1 ー収穫蜂ー  (2) の動きは以下のようになる適合度はfunc関数で見る
+        #if func(x[i]) > func(v[i]):
+            #x[i] = v[i]
+            #TC[i] = 0
+        #else: TC[i] += 1
+      #func 関数　　#目的関数（例としてsphere関数）sphere関数は球体の関数ってことらしい　　np.sumで合計値を出すことができる　つまりXの2乗の合計値かな？？
+        #def func(x):
+            #return np.sum(x**2)
+      #x[i]の値は　収穫蜂i　で　1～99までの連番の値
+      #v[i]の値は更新式　　で探索点を更新した値　　　更新式v[i,j] = x[i,j] + r * (x[i,j] - x[k,j])
+
+      #つまりfunc 関数で値がif func(x[i]) > func(v[i]):　の時は　　x[i] = v[i]にして　探索点を更新そしてカウンタの　TC[i] = 0　とする
+　　　#func 関数で値がif func(x[i]) > func(v[i]):　以外の時は　更新はせず代わりにカウンタを+1する
+
+# アルゴリズム
+best_value = []
+for g in range(G):
+    best_value.append(func(x_best))
+
+    # employee bee step　Step1 ー収穫蜂ー
+    for i in range(N):
+        v = x.copy()
+        k = i
+        while k == i:
+            k = np.random.randint(N)
+
+        #Step1の(1)探索点を更新していく
+        for j in range(d):
+            r = np.random.rand()*2-1 #-1から1までの一様乱数
+            v[i,j] = x[i,j] + r * (x[i,j] - x[k,j])
+        #Step1の(2)新探索点候補が現在の探索点より適合度が高ければさらに確認
+        if func(x[i]) > func(v[i]):
+            x[i] = v[i]
+            TC[i] = 0
+        else: TC[i] += 1
+        print("Step1 ー収穫蜂ー の座標　v[i]",v[i])
+        #print("Step1の(2)TC",TC)
+
+    # onlooker bee step　Step2 ー追従蜂ー　収穫蜂１匹をルーレット選択し、Step1の(1)(2)の作業を行う
+    for i in range(N):
+        w = []
+        for j in range(N):
+            w.append(np.exp(-func(x[j])))
+        i = roulette_choice(w)
+        for j in range(d):
+            r = np.random.rand()*2-1 #-1から1までの一様乱数
+            v[i,j] = x[i,j] + r * (x[i,j] - x[k,j])
+        if func(x[i]) > func(v[i]):
+            x[i] = v[i]
+            TC[i] = 0
+        else: TC[i] += 1
+        print("Step2 ー追従蜂ーv[i]",v[i])
+        #print("Step2 ー追従蜂ーTC",TC)
+
+    # scout bee step　Step3 ー偵察蜂ー　カウンタTCがあらかじめ設定した閾値を超えている場合、その収穫蜂の探索点を初期化する
+    for i in range(N):
+        if TC[i] > lim:
+            for j in range(d):
+                x[i,j] = np.random.rand()*(xmax-xmin) + xmin
+            TC[i] = 0
+            print("Step3 ー偵察蜂ー　TC",TC)
+
+    # 最良個体の発見　　
+    for i in range(N):
+        if best > func(x[i]):
+            x_best = x[i]
+            best = func(x_best)
+            print("最良個体の発見",best)
+
+print(x_best,func(x_best))
+plt.plot(range(G),best_value)
+plt.yscale('log')
+plt.title("ABC")
+plt.show()
