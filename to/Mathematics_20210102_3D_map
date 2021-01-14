@@ -1,0 +1,73 @@
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+def f3(x0,x1):
+  ans = (2*x0**2+x1**2)*np.exp(-(2*x0**2+x1**2))
+  return ans
+  
+xn=9
+x0=np.linspace(-2,2,xn)
+x0
+#-2~2の間で9個のarrayを作れって意味です
+
+x1=np.linspace(-2,2,xn)
+x1
+
+#各x0,x1でf3を計算
+y=np.zeros((len(x0),len(x1)))
+for i1 in range(xn):
+  for i0 in range(xn):
+    y[i1,i0]=f3(x0[i0],x1[i1])
+    
+    
+#図で示す
+plt.figure(figsize=(3.5,3))
+plt.gray()
+plt.pcolor(y)
+plt.colorbar()
+plt.show()    
+    
+
+#図で示す2
+xx0,xx1=np.meshgrid(x0,x1)
+
+plt.figure(1,figsize=(4,4))
+cont=plt.contour(xx0,xx1,y,5,colors="black")
+cont.clabel(fmt="%.2f",fontsize=8)
+plt.xlabel("$x_0$")
+plt.ylabel("$x_1$")
+plt.show()   
+
+
+N=100
+xmax = 5
+xmin = -5
+d = 2 # 次元
+
+#np.zeros((3,4)) # ３×４の２次元配列を生成。
+#np.zeros((N,d)) # N×dの２次元配列を生成。
+#rangeには始まりの数値、最後の数値、増加する量の3つの引数がありますが、このうち始まりの数値と増加する量は省略することができます。range()に数値を1つ渡すと、それが最後の数値となり、0から「最後の数値 – 1」までの値が格納されたリストが作成されます。
+#for i in range(N)  ならN回繰り返す　となる　つまりNが100なら100回繰り返す
+#一様分布の乱数生成  numpy.random.rand(): 0.0以上、1.0未満
+#np.random.rand(d) dが2なら　2個の乱数生成
+
+x = np.zeros((N,d))
+for i in range(N):
+    x[i] = (xmax-xmin)*np.random.rand(d) + xmin
+    
+#EDA 解析
+df = pd.DataFrame(x)
+#EDA解析の実施
+import pandas as pd
+import pandas_profiling as pdp
+
+pdp.ProfileReport(df)
+
+#3Dプロット
+import plotly.express as px
+fig = px.scatter_3d(df,x="0", y="1", z="1",color='0',  opacity=0.5)
+fig.update_layout(margin=dict(l=0, r=0, b=0, t=0))
+fig.update_traces(marker=dict(size=2))
+fig.show()
+    
