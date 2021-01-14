@@ -1,0 +1,78 @@
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+#make list
+for i in list_1_10:
+  ans = fun_2(i)
+  print(ans)
+  
+#make list2 
+l=[]
+for i in list_1_10:
+  ans = fun_2(i)
+  print(ans)
+  l.append(ans)
+
+#make list3
+list_1_1000=list(range(0,1000))
+for i in list_1_1000:
+  ans = fun_2(i)
+  print(ans)
+  
+#等間隔でn点を返してくれる変数
+X=np.linspace(-3,3,10)
+#np.round(X,2)Xを小数点２に桁に四捨五入する命令文
+print(np.round(X,2))
+
+def fun_3(x):
+  return (x-3)*x*(x-2)
+
+#グラフを描画する
+plt.plot(X,fun_3(X))
+plt.show()
+
+def f2(X,W):
+  return (X-W)*X*(X+2)
+X=np.linspace(-3,3,100) #Xを100 分割
+plt.plot(X,f2(X,2),color='black',label="$w=2$")
+plt.plot(X,f2(X,1),color='sandybrown',label="$w=1$")
+plt.legend(loc="upper left")#上のグラフを表示する場所
+plt.ylim(-15,15)#yの表示範囲
+plt.title("f_2(x)")
+plt.xlabel("$x$")
+plt.ylabel("$y$")
+plt.grid(True)
+plt.show
+
+#カラーの確認
+import matplotlib
+matplotlib.colors.cnames
+
+#様々な条件のグラフを描画する
+def f2(X,W):
+  return (X-W)*X*(X+2)
+X=np.linspace(-3,3,1000) #Xを100 分割
+plt.plot(X,f2(X,100),color='black',label="$w=2$")
+plt.plot(X,f2(X,50),color='blue',label="$w=1$")
+#'mediumspringgreen'
+plt.plot(X,f2(X,2),color="mediumspringgreen",label="$w=1$")
+plt.legend(loc="upper left")#上のグラフを表示する場所
+plt.ylim(-15,150)#yの表示範囲
+plt.title("$f_2(x)$")
+plt.xlabel("$x$")
+plt.ylabel("$y$")
+plt.grid(True)
+plt.show
+
+
+#plt.subplot_adjust(wspace=0.5, hspace=0.5)
+#plt.subplot() 全体を分割した際の値が出る
+plt.figure(figsize=(10,3))
+for i in range(6):
+  plt.subplot(2,3,i+1)
+  plt.title(i+1)
+  plt.plot(X,f2(X,i),"k")
+  plt.ylim(-20,20)
+  plt.grid(True)
+plt.show()
